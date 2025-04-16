@@ -56,7 +56,7 @@ def insert_category(category: str):
         raw_json = response.json()
 
         if "leaderboard" not in raw_json or not raw_json["leaderboard"]:
-            logging.warning(f"No leaderboard returned for {category}")
+            logging.warning(f"No companies  {category}")
             return
 
         logging.info(f"Inserting {category} with {len(raw_json['leaderboard'])} companies...")
