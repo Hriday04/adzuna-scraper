@@ -5,20 +5,19 @@ import json
 from datetime import datetime, timezone
 import time
 import os
+with open("startup.log", "w") as f:
+    f.write("✅ scraper.py was executed\n")
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s - %(message)s'
 )
 logging.info("scrape start")
 
-# Get environment variables
 DB_URL = os.getenv("DATABASE_URL")
 ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID")
 ADZUNA_APP_KEY = os.getenv("ADZUNA_APP_KEY")
 
-# All Adzuna categories
 adzuna_categories = [
     "accounting-finance-jobs",
     "admin-jobs",
@@ -53,9 +52,9 @@ def insert_category(category: str):
         "app_key": ADZUNA_APP_KEY,
         "category": category
     }
+    logging.info(f"➡️ Starting scrape for category: {category}")
 
     try:
-        # API request
         response = requests.get(url, params=params)
         response.raise_for_status()
         raw_json = response.json()
