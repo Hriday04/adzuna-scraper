@@ -11,6 +11,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s - %(message)s'
 )
+logging.info("scrape start")
 
 # Get environment variables
 DB_URL = os.getenv("DATABASE_URL")
