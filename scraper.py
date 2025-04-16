@@ -6,15 +6,44 @@ from datetime import datetime, timezone
 import time
 import os
 
-# Logging config
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s - %(message)s'
 )
 
+# Get environment variables
 DB_URL = os.getenv("DATABASE_URL")
 ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID")
 ADZUNA_APP_KEY = os.getenv("ADZUNA_APP_KEY")
+
+# All Adzuna categories
+adzuna_categories = [
+    "accounting-finance-jobs",
+    "admin-jobs",
+    "consultancy-jobs",
+    "customer-services-jobs",
+    "energy-oil-gas-jobs",
+    "engineering-jobs",
+    "graduate-jobs",
+    "healthcare-nursing-jobs",
+    "hospitality-catering-jobs",
+    "hr-jobs",
+    "it-jobs",
+    "legal-jobs",
+    "logistics-warehouse-jobs",
+    "maintenance-jobs",
+    "manufacturing-jobs",
+    "other-general-jobs",
+    "part-time-jobs",
+    "property-jobs",
+    "retail-jobs",
+    "sales-jobs",
+    "scientific-qa-jobs",
+    "teaching-jobs",
+    "trade-construction-jobs",
+    "travel-jobs"
+]
 
 def insert_category(category: str):
     url = "https://api.adzuna.com/v1/api/jobs/us/top_companies"
@@ -25,6 +54,7 @@ def insert_category(category: str):
     }
 
     try:
+        # API request
         response = requests.get(url, params=params)
         response.raise_for_status()
         raw_json = response.json()
@@ -37,7 +67,6 @@ def insert_category(category: str):
 
         conn = psycopg2.connect(DB_URL)
         cur = conn.cursor()
-
         cur.execute("""
             INSERT INTO final.adzuna_top_companies_raw 
             (raw_json, category_tag, scraped_at, normalized)
@@ -48,13 +77,16 @@ def insert_category(category: str):
             datetime.now(timezone.utc),
             False
         ))
-
         conn.commit()
         cur.close()
         conn.close()
 
-        logging.info(f"✅ Inserted: {category}")
+        logging.info(f"Inserted: {category}")
         time.sleep(1)
 
     except Exception as e:
-        logging.error(f"❌ Error for {category}: {e}")
+        logging.error(f"Error for {category}: {e}")
+
+if __name__ == "__main__":
+    for category in adzuna_categories:
+        insert_category(category)
