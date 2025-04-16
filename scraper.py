@@ -5,8 +5,6 @@ import json
 from datetime import datetime, timezone
 import time
 import os
-with open("startup.log", "w") as f:
-    f.write("✅ scraper.py was executed\n")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -52,8 +50,6 @@ def insert_category(category: str):
         "app_key": ADZUNA_APP_KEY,
         "category": category
     }
-    logging.info(f"➡️ Starting scrape for category: {category}")
-
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
